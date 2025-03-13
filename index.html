@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CN Fans Reselling Business</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 15px;
+        }
+        
+        .dashboard {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card {
+            flex: 1;
+            min-width: 120px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .stat-card.profit {
+            background-color: #d4edda;
+        }
+        
+        .stat-card.loss {
+            background-color: #f8d7da;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        table th, table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        
+        .status-sold {
+            color: green;
+            font-weight: bold;
+        }
+        
+        .status-household, .status-warehouse {
+            color: orange;
+            font-weight: bold;
+        }
+        
+        .add-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        
+        .inventory-filter {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .filter-button.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        
+        .search-box {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .responsive-table {
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+            }
+            
+            .stat-card {
+                width: 100%;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            table th, table td {
+                padding: 6px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CN Fans Reselling Business</h1>
+        
+        <div class="dashboard">
+            <h2>Dashboard</h2>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value">23</div>
+                    <div class="stat-label">Total Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">£270.68</div>
+                    <div class="stat-label">Total Cost</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">£240.00</div>
+                    <div class="stat-label">Total Income</div>
+                </div>
+                <div class="stat-card loss">
+                    <div class="stat-value">-£30.68</div>
+                    <div class="stat-label">Net Profit</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Items Sold</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('inventory')">Inventory</div>
+            <div class="tab" onclick="switchTab('orders')">Orders</div>
+            <div class="tab" onclick="switchTab('sales')">Sales</div>
+            <div class="tab" onclick="switchTab('expenses')">Expenses</div>
+        </div>
+        
+        <div id="inventory" class="tab-content active">
+            <input type="text" class="search-box" placeholder="Search inventory...">
+            
+            <div class="inventory-filter">
+                <button class="filter-button active">All</button>
+                <button class="filter-button">Sold</button>
+                <button class="filter-button">Household</button>
+                <button class="filter-button">Warehouse</button>
+            </div>
+            
+            <div class="responsive-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Cost</th>
+                            <th>Status</th>
+                            <th>Shipping</th>
+                            <th>Total</th>
+                            <th>Income</th>
+                            <th>Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Stussy UK Tee</td>
+                            <td>£10.87</td>
+                            <td class="status-sold">Sold</td>
+                            <td>£6.99</td>
+                            <td>£17.86</td>
+                            <td>£40.00</td>
+                            <td>£22.13</td>
+                        </tr>
+                        <tr>
+                            <td>Stussy Polo T</td>
+                            <td>£14.41</td>
+                            <td class="status-sold">Sold</td>
+                            <td>£6.99</td>
+                            <td>£21.40</td>
+                            <td>£50.00</td>
+                            <td>£28.59</td>
+                        </tr>
+                        <tr>
+                            <td>Yeezy Joggers</td>
+                            <td>£9.77</td>
+                            <td class="status-household">Household</td>
+                            <td>£6.99</td>
+                            <td>£16.76</td>
+                            <td>£0.00</td>
+                            <td>-£16.76</td>
+                        </tr>
+                        <tr>
+                            <td>NZ Polo Tee</td>
+                            <td>£11.35</td>
+                            <td class="status-household">Household</td>
+                            <td>£6.99</td>
+                            <td>£18.34</td>
+                            <td>£0.00</td>
+                            <td>-£18.34</td>
+                        </tr>
+                        <tr>
+                            <td>Sup True Jump</td>
+                            <td>£51.26</td>
+                            <td class="status-sold">Sold</td>
+                            <td>£6.99</td>
+                            <td>£58.25</td>
+                            <td>£130.00</td>
+                            <td>£71.74</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button class="add-button">+ Add New Item</button>
+        </div>
+        
+        <div id="orders" class="tab-content">
+            <div class="responsive-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Total Cost</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>03/01/2025</td>
+                            <td>5 items</td>
+                            <td>£140.07</td>
+                            <td>Complete</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>15/01/2025</td>
+                            <td>5 items</td>
+                            <td>£130.61</td>
+                            <td>Complete</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>02/02/2025</td>
+                            <td>5 items</td>
+                            <td>£104.71</td>
+                            <td>In transit</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button class="add-button">+ Create New Order</button>
+        </div>
+        
+        <div id="sales" class="tab-content">
+            <div class="responsive-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Item</th>
+                            <th>Sale Price</th>
+                            <th>Cost</th>
+                            <th>Profit</th>
+                            <th>Margin %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>05/01/2025</td>
+                            <td>Stussy UK Tee</td>
+                            <td>£40.00</td>
+                            <td>£17.86</td>
+                            <td>£22.13</td>
+                            <td>55%</td>
+                        </tr>
+                        <tr>
+                            <td>12/01/2025</td>
+                            <td>Stussy Polo T</td>
+                            <td>£50.00</td>
+                            <td>£21.40</td>
+                            <td>£28.59</td>
+                            <td>57%</td>
+                        </tr>
+                        <tr>
+                            <td>20/01/2025</td>
+                            <td>Sup True Jump</td>
+                            <td>£130.00</td>
+                            <td>£58.25</td>
+                            <td>£71.74</td>
+                            <td>55%</td>
+                        </tr>
+                        <tr>
+                            <td>18/01/2025</td>
+                            <td>Cortiez Bally</td>
+                            <td>£20.00</td>
+                            <td>£12.42</td>
+                            <td>£7.60</td>
+                            <td>38%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button class="add-button">+ Record New Sale</button>
+        </div>
+        
+        <div id="expenses" class="tab-content">
+            <div class="responsive-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>03/01/2025</td>
+                            <td>Handling Fee</td>
+                            <td>Order #1</td>
+                            <td>£7.43</td>
+                        </tr>
+                        <tr>
+                            <td>15/01/2025</td>
+                            <td>Handling Fee</td>
+                            <td>Order #2</td>
+                            <td>£6.02</td>
+                        </tr>
+                        <tr>
+                            <td>05/01/2025</td>
+                            <td>Shipping</td>
+                            <td>Order #1 Items</td>
+                            <td>£34.98</td>
+                        </tr>
+                        <tr>
+                            <td>18/01/2025</td>
+                            <td>Shipping</td>
+                            <td>Order #2 Items</td>
+                            <td>£44.25</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button class="add-button">+ Add New Expense</button>
+        </div>
+    </div>
+    
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Deactivate all tabs
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Activate the selected tab and content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Find the tab button that was clicked and activate it
+            const tabButtons = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabButtons.length; i++) {
+                if (tabButtons[i].textContent.toLowerCase().includes(tabName)) {
+                    tabButtons[i].classList.add('active');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
